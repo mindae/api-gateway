@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      server:
+        webmvc:
+          routes:
+            - id: employee-svc
+              uri: lb://employee-svc
+              predicates:
+               - Path=/api/v1/employees/**
+            - id: department-svc
+              uri: lb://department-svc
+              predicates:
+               - Path=/api/v1/departments/**
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka/}
+server:
+  port: 9090
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+
+
