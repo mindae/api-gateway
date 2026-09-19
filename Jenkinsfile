@@ -55,5 +55,17 @@ pipeline {
                 sh 'docker push ${IMAGE_NAME}:${BUILD_NUMBER}'
             }
         }
+
+        stage('Deploy to K8s') {
+            steps {
+                sh '''
+                    kubectl version --client
+                    kubectl get nodes
+                    kubectl set image deployment/api-gateway \
+                        api-gateway=${IMAGE_NAME}:${BUILD_NUMBER}
+                    kubectl rollout status deployment/api-gateway
+                '''
+            }
+        }
     }
 }
